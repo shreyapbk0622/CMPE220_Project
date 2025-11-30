@@ -1,0 +1,31 @@
+# Compiled binaries
+cpu
+assembler
+hello
+fibonacci
+run_*
+*.exe
+*.out
+
+# Generated files
+*.bin
+*.o
+*.h.bak
+*_output.h
+*_output.bin
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python cache (for Jupyter)
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
