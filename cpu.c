@@ -3,17 +3,18 @@
 
 #define WORD_SIZE 16
 #define STACK_SIZE 1000
+#define MMIO_CHAR_OUT 32  // Memory-mapped I/O address for character output
 
 typedef uint16_t word_t;
 
 enum {
     NOP, MOV, ADD, SUB, AND, OR, MUL, DIV,
-    JMP, JZ, CALL, RET, HALT
+    JMP, JZ, CALL, RET, HALT, LOAD, STORE
 };
 
 const char *OPCODE_STRINGS[] = {
     "NOP","MOV","ADD","SUB","AND","OR","MUL","DIV",
-    "JMP","JZ","CALL","RET","HALT"
+    "JMP","JZ","CALL","RET","HALT","LOAD","STORE"
 };
 
 struct ALUFlags {
@@ -231,6 +232,29 @@ static void dump_registers(struct CPU *cpu) {
            cpu->cu.aluflags.cy);
 }
 
+/* ---------------- Memory-Mapped I/O ---------------- */
+
+static void memory_write(struct CPU *cpu, word_t address, word_t value) {
+    // Check for memory-mapped I/O
+    if (address == MMIO_CHAR_OUT) {
+        // Character output port
+        printf("%c", (char)(value & 0xFF));
+        fflush(stdout);
+    }
+    
+    // Always write to memory as well
+    if (address < 400) {
+        cpu->mainMemory.mem[address] = value;
+    }
+}
+
+static word_t memory_read(struct CPU *cpu, word_t address) {
+    if (address < 400) {
+        return cpu->mainMemory.mem[address];
+    }
+    return 0;
+}
+
 /* ---------------- CPU core helpers ---------------- */
 
 static void load_program(struct CPU *cpu, word_t *program, int size) {
@@ -327,6 +351,14 @@ static void fetch_decode_execute(struct CPU *cpu) {
         cpu->running = 0;
         printf("[CPU] Program HALTED.\n");
         return;
+    } else if (op == LOAD) {
+        // LOAD R1, R2 - Load from memory[R2] into R1
+        word_t address = cpu->gpr.reg[r2];
+        cpu->gpr.reg[r1] = memory_read(cpu, address);
+    } else if (op == STORE) {
+        // STORE R1, R2 - Store R1 into memory[R2]
+        word_t address = cpu->gpr.reg[r2];
+        memory_write(cpu, address, cpu->gpr.reg[r1]);
     }
 
     dump_registers(cpu);
