@@ -42,8 +42,16 @@ gcc -std=c11 cpu.c -o cpu
 gcc -std=c11 cpu.c -o cpu.exe
 cpu.exe
 ```
+### 2. Run Timer Program - to show how execution happens in Fetch/Compute/Store cycles
 
-### 2. Run Hello World Program
+```bash
+gcc -std=c11 timer.c -o timer
+./timer
+```
+
+Expected output: `HELLO, WORLD!`
+
+### 3. Run Hello World Program
 
 ```bash
 gcc -std=c11 run_hello.c -o hello
@@ -52,7 +60,7 @@ gcc -std=c11 run_hello.c -o hello
 
 Expected output: `HELLO, WORLD!`
 
-### 3. Run Fibonacci Program with Cycle Trace
+### 4. Run Fibonacci Program with Cycle Trace
 
 ```bash
 gcc -std=c11 run_fibonacci.c -o fibonacci
@@ -61,7 +69,7 @@ gcc -std=c11 run_fibonacci.c -o fibonacci
 
 This shows detailed Fetch-Decode-Execute-Store cycles for the Fibonacci sequence.
 
-### 4. Use the Assembler
+### 5. Use the Assembler
 
 Compile the assembler:
 ```bash
@@ -91,6 +99,7 @@ CMPE220_Project/
 │   ├── assembler.c            # Assembler
 │   ├── run_hello.c            # Hello World demo
 │   └── run_fibonacci.c        # Fibonacci demo
+│   └── timer.c                # Fetch/Compute/Store cycles
 ├── Assembly Programs/
 │   ├── timer.asm              # Timer program
 │   ├── hello.asm              # Hello World
